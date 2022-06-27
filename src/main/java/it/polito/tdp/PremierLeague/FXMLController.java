@@ -5,9 +5,13 @@
 package it.polito.tdp.PremierLeague;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.PremierLeague.model.Model;
+import it.polito.tdp.PremierLeague.model.Player;
+import it.polito.tdp.PremierLeague.model.TopPlayers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -44,17 +48,61 @@ public class FXMLController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-
+    	txtResult.clear();
+    	double media;
+    	try {
+    		media= Double.parseDouble(txtGoals.getText());
+    	}catch(NumberFormatException e) {
+    		txtResult.setText("Inserire un valore numerico.\n");
+    		return;
+    	}
+    	
+    	this.model.creaGrafo(media);
+    	txtResult.setText("Grafo Creato");
+    	txtResult.appendText("\nNumero Vertici: "+this.model.getNVertici());
+    	txtResult.appendText("\nNumbero Archi: "+this.model.getNArchi());
+    	
     }
 
     @FXML
     void doDreamTeam(ActionEvent event) {
-
+    	txtResult.clear();
+    	int nGiocatori;
+    	try {
+    		nGiocatori= Integer.parseInt(txtK.getText());
+    	}catch(NumberFormatException e) {
+    		txtResult.setText("Inserire un valore numerico.\n");
+    		return;
+    	}
+    	
+    	List<Player> dreamTeam= new ArrayList<>(this.model.calcolaPercorso(nGiocatori));
+    	double grado=this.model.getGradoTitolarita();
+    	txtResult.setText("Il grado di titolarità del Dream Team è : "+grado);
+    	for(Player p: dreamTeam) {
+    		txtResult.appendText("\n"+p.toString());
+    	}
     }
 
     @FXML
     void doTopPlayer(ActionEvent event) {
 
+    	txtResult.clear();
+    	double media;
+    	try {
+    		media= Double.parseDouble(txtGoals.getText());
+    	}catch(NumberFormatException e) {
+    		txtResult.setText("Inserire un valore numerico.\n");
+    		return;
+    	}
+    	
+    	this.model.creaGrafo(media);
+    	
+    	List<TopPlayers> top= this.model.getTopPlayers();
+    	txtResult.clear();
+    	txtResult.setText("TOP PLAYER: "+this.model.getTopPlayer()+"\nAVVERSARI BATTUTI: \n");
+    	for(TopPlayers p: top) {
+    		txtResult.appendText("\n"+p.getPlayer().toString()+" | "+p.getPesoArco());
+    	}
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
